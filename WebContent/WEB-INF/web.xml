@@ -17,9 +17,10 @@
   ~ specific language governing permissions and limitations
   ~ under the License.
   -->
-<web-app xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<!-- <web-app xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
-         version="2.5">
+         version="2.5"> -->
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd" id="WebApp_ID" version="3.0">
 
     <listener>
         <listener-class>org.apache.shiro.web.env.EnvironmentLoaderListener</listener-class>
@@ -28,6 +29,7 @@
     <filter>
         <filter-name>ShiroFilter</filter-name>
         <filter-class>org.apache.shiro.web.servlet.ShiroFilter</filter-class>
+        <async-supported>true</async-supported>
     </filter>
 
     <filter-mapping>
@@ -39,4 +41,38 @@
         <welcome-file>index.jsp</welcome-file>
     </welcome-file-list>
 
-</web-app>
+
+  <!--amq  begin******************************************************************************************************************************************-->
+
+    <!--要是配置接收客户端请求的servlet-->
+    <servlet>
+        <servlet-name>AjaxServlet</servlet-name>
+        <servlet-class>org.apache.activemq.web.AjaxServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
+        <async-supported>true</async-supported>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>AjaxServlet</servlet-name>
+        <url-pattern>/amq/*</url-pattern>
+    </servlet-mapping>
+    <!--
+    用来配置这个servlet
+      要连接代理的URI,配置如下,表示启动时servlet将连接tcp://127.0.0.1:61616.
+      这里使用tcp://127.0.0.1:61616时,假如中途代理关闭了是不能自动重连的,可以使用
+      failover协议,在代理从失败中恢复时可以重连(URI使用failover://(tcp://127.0.0.1:61616)?randomize=false)
+    -->
+    <context-param>
+        <param-name>org.apache.activemq.brokerURL</param-name>
+        <param-value>failover://(tcp://192.168.1.104:61616)?randomize=false</param-value>
+    </context-param>
+
+    <!--
+    下面的配置表明 不需要启用一个嵌入式代理
+    -->
+  
+    <context-param>
+    	<param-name>org.apache.activemq.embeddedBroker</param-name>
+    	<param-value>false</param-value>
+    	</context-param>
+    
+    </web-app>
