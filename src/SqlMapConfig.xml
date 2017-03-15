@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMapConfig PUBLIC "-//ibatis.apache.org//DTD SQL Map Config 2.0//EN"
+"http://ibatis.apache.org/dtd/sql-map-config-2.dtd">
+<sqlMapConfig>
+    <settings useStatementNamespaces="true" />
+    
+    <!-- 使用JDBC的事务管理 -->
+    <transactionManager type="JDBC">
+        <!-- 数据源 -->
+        <dataSource type="SIMPLE">
+            <property name="JDBC.Driver" value="org.sqlite.JDBC" />
+            <property name="JDBC.ConnectionURL" value="jdbc:sqlite::resource:yuyuedb.db" />
+            <property name="JDBC.Username" value="" />
+            <property name="JDBC.Password" value="" />
+        </dataSource>
+    </transactionManager>
+    <!--实体的映射文件 -->
+<!--     <sqlMap resource="com/loadfate/domain/User.xml" /> -->
+    <sqlMap resource="domain/xml/eqplist_SqlMap.xml" />
+    <sqlMap resource="domain/xml/eqplistlog_SqlMap.xml" />
+    
+</sqlMapConfig>

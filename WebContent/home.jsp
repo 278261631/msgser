@@ -16,8 +16,11 @@
   ~ specific language governing permissions and limitations
   ~ under the License.
   --%>
+<%@page import="domain.model.EqpmentExample"%>
 <%@ include file="include.jsp" %>
-
+<%@ page language="java" import="domain.dao.EqpmentDAO" %>
+<%@ page language="java" import="domain.dao.EqpmentDAOImpl" %>
+<%@ page language="java" import="java.sql.SQLException" %>
 <html>
 <head>
     <link type="text/css" rel="stylesheet" href="<c:url value="/style.css"/>"/>
@@ -63,7 +66,17 @@
     <shiro:lacksRole name="goodguy">goodguy<br/></shiro:lacksRole>
     <shiro:lacksRole name="schwartz">schwartz<br/></shiro:lacksRole>
 </p>
+<%
 
+EqpmentDAO dao=new EqpmentDAOImpl();
+try {
+	EqpmentExample example = new EqpmentExample();
+	System.out.println(dao.countByExample(example));
+} catch (SQLException e) {
+	// TODO Auto-generated catch block
+	e.printStackTrace();
+}
+%>
 
 </body>
 </html>
