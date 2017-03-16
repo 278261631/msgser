@@ -21,6 +21,7 @@
 <%@ page language="java" import="domain.dao.EqpmentDAO" %>
 <%@ page language="java" import="domain.dao.EqpmentDAOImpl" %>
 <%@ page language="java" import="java.sql.SQLException" %>
+<%@ page language="java" import="java.util.List" %>
 <html>
 <head>
     <link type="text/css" rel="stylesheet" href="<c:url value="/style.css"/>"/>
