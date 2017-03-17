@@ -18,5 +18,7 @@
 <!--     <sqlMap resource="com/loadfate/domain/User.xml" /> -->
     <sqlMap resource="domain/xml/eqplist_SqlMap.xml" />
     <sqlMap resource="domain/xml/eqplistlog_SqlMap.xml" />
+    <sqlMap resource="domain/xml/eventlist_SqlMap.xml" />
+    <sqlMap resource="domain/xml/eventlistLog_SqlMap.xml" />
     
 </sqlMapConfig>

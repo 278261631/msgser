@@ -19,10 +19,14 @@
 <%@page import="org.apache.jasper.tagplugins.jstl.core.ForEach"%>
 <%@ page pageEncoding="UTF-8"%>
 <%@page import="domain.model.EqpmentExample"%>
+<%@page import="domain.model.EventExample"%>
 <%@ include file="../include.jsp" %>
 <%@ page language="java" import="domain.dao.EqpmentDAO" %>
+<%@ page language="java" import="domain.dao.EventDAO" %>
 <%@ page language="java" import="domain.model.Eqpment" %>
+<%@ page language="java" import="domain.model.Event" %>
 <%@ page language="java" import="domain.dao.EqpmentDAOImpl" %>
+<%@ page language="java" import="domain.dao.EventDAOImpl" %>
 <%@ page language="java" import="java.sql.SQLException" %>
 <%@ page language="java" import="java.util.List" %>
 <%@ page language="java" import="util.JsonGen" %>
@@ -30,17 +34,23 @@
 <%
 
 EqpmentDAO dao=new EqpmentDAOImpl();
+EventDAO evtdao=new EventDAOImpl();
 String jsonString="";
+String envString="";
 try {
 	EqpmentExample example = new EqpmentExample();
 	System.out.println(dao.countByExample(example));
 	List<Eqpment> eqlist=dao.selectByExample(example);
+	EventExample evtExample =new EventExample();
+	List<Event> events=evtdao.selectByExample(evtExample);
 	/* for(int i = 0 ;i<eqlist.size();i++){
 		Eqpment item=(Eqpment)eqlist.get(i);
 		
 	} */
 	jsonString = JsonGen.GenResourcesListJson(eqlist);
+	envString  = JsonGen.GenEventListJson(events);
 	System.out.println(jsonString);
+	System.out.println(envString);
 } catch (SQLException e) {
 	// TODO Auto-generated catch block
 	e.printStackTrace();
@@ -63,7 +73,7 @@ try {
 	$(function() { // document ready
 
 		$('#calendar').fullCalendar({
-			now: '2017-03-06',
+			now: '2017-03-17',
 			editable: true,
 			aspectRatio: 1.8,
 			scrollTime: '1:00',
@@ -98,13 +108,14 @@ try {
 				{ id: 'z', title: 'Auditorium Z' }
 			] */
 			,
-			events: [
-				{ id: '1', resourceId: '1', start: '2017-03-06T02:00:00', end: '2017-03-06T07:00:00', title: '--xxx' },
-				{ id: '2', resourceId: '2', start: '2017-03-06T05:00:00', end: '2017-03-06T12:00:00', title: '--2' },
-				{ id: '3', resourceId: '3', start: '2017-03-05', end: '2017-03-10', title: '--' },
-				{ id: '4', resourceId: '4', start: '2017-03-06T03:00:00', end: '2017-03-06T08:00:00', title: '==影响' },
-				{ id: '5', resourceId: '5', start: '2017-03-06T00:30:00', end: '2017-03-06T02:30:00', title: '-it' }
-			]
+			events: <%=envString%>
+			/* [
+				{ id: '1', resourceId: '1', start: '2017-03-17T02:00:00', end: '2017-03-17T07:00:00', title: '--xxx' },
+				{ id: '2', resourceId: '2', start: '2017-03-17T05:00:00', end: '2017-03-17T12:00:00', title: '--2' },
+				{ id: '3', resourceId: '3', start: '2017-03-16', end: '2017-03-29', title: '--' },
+				{ id: '4', resourceId: '4', start: '2017-03-17T03:00:00', end: '2017-03-17T08:00:00', title: '==影响' },
+				{ id: '5', resourceId: '5', start: '2017-03-17T00:30:00', end: '2017-03-17T02:30:00', title: '-it' }
+			] */
 		});
 	
 	});
