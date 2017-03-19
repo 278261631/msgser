@@ -63,13 +63,13 @@ try {
     
     <link href='lib/fullcalendar.min.css' rel='stylesheet' />
 <link href='lib/fullcalendar.print.min.css' rel='stylesheet' media='print' />
+<link rel="stylesheet" href="lib/css/Lobibox.min.css">
 <link href='scheduler.min.css' rel='stylesheet' />
 <script src='lib/moment.min.js'></script>
-<!-- <script src='lib/jquery.min.js'></script> -->
 <script src='lib/js/jquery-1.11.0.min.js'></script>
+<script src='lib/jquery-ui.min.js'></script>
 <script src='lib/fullcalendar.min.js'></script>
 <script src='scheduler.min.js'></script>
-<link rel="stylesheet" href="lib/css/Lobibox.min.css">
 <script src="lib/js/bootstrap.min.js"></script>  
 <script src="lib/js/lobibox.min.js"></script>  
 <script type="text/javascript" charset="UTF-8" >
@@ -128,13 +128,50 @@ try {
 							  sound: false,
 							  size: 'large',
 							  title: '列表  <span id="prm_event_id">'+event.id +'</span> <span id="prm_event_resourceid">' + event.resourceId +'<span>',
-			                  msg: '<span id="prm_event_start">'+ event.start.format()+'</span> -- <span id="prm_event_end">'+event.end.format()+'</span><button id ="saveEventButton" onclick="saveEvent('+event.id+')">保存（save）</button>'
+			                  msg: '<span id="prm_event_start">'+ event.start+'</span> -- <span id="prm_event_end">'+event.end
+			                  	+'</span><button id ="saveEventButton" onclick="saveEvent('+event.id+')">保存（save）</button>';
+			        
 						  }
 						);  
 
-		    }
+		    },
+		    
+			droppable: true, // this allows things to be dropped onto the calendar
+			drop: function() {
+				// is the "remove after drop" checkbox checked?
+				if ($('#drop-remove').is(':checked')) {
+					// if so, remove the element from the "Draggable Events" list
+					$(this).remove();
+				}
+			}
 		});
 	
+
+		$('#external-events .fc-event').each(function() {
+
+			// store data so the calendar knows to render an event upon drop
+			$(this).data('event', {
+				title: $.trim($(this).text()), // use the element's text as the event title
+				stick: true // maintain when user navigates (see docs on the renderEvent method)
+			});
+
+			// make the event draggable using jQuery UI
+			$(this).draggable({
+				zIndex: 999,
+				revert: true,      // will cause the event to go back to its
+				revertDuration: 0  //  original position after the drag
+			});
+
+		});
+	
+		$('#external-events').droppable({
+		      drop: function( event, ui ) {
+		          $( this )
+		            .addClass( "ui-state-highlight" )
+		            .find( "p" )
+		              .html( "Dropped!" );
+		        };});
+		
 	});
 	
 
@@ -158,14 +195,71 @@ try {
 	}
 
 	#calendar {
-		max-width: 900px;
-		margin: 50px auto;
+		float: right;
+		width: 900px;
+	}
+		#wrap {
+		width: 1100px;
+		margin: 0 auto;
+	}
+		
+	#external-events {
+		float: left;
+		width: 150px;
+		padding: 0 10px;
+		border: 1px solid #ccc;
+		background: #eee;
+		text-align: left;
+	}
+		
+	#external-events h4 {
+		font-size: 16px;
+		margin-top: 0;
+		padding-top: 1em;
+	}
+		
+	#external-events .fc-event {
+		margin: 10px 0;
+		cursor: pointer;
+	}
+		
+	#external-events p {
+		margin: 1.5em 0;
+		font-size: 11px;
+		color: #666;
+	}
+		
+	#external-events p input {
+		margin: 0;
+		vertical-align: middle;
 	}
 
 </style>
     
 </head>
 <body>
+
+	<div id='wrap'>
+
+		<div id='external-events'>
+			<h4>Draggable Events</h4>
+			<div class='fc-event'>My Event 1</div>
+			<div class='fc-event'>My Event 2</div>
+			<div class='fc-event'>My Event 3</div>
+			<div class='fc-event'>My Event 4</div>
+			<div class='fc-event'>My Event 5</div>
+			<p>
+				<input type='checkbox' id='drop-remove' />
+				<label for='drop-remove'>remove after drop</label>
+			</p>
+		</div>
+
+		<div id='calendar'></div>
+
+		<div style='clear:both'></div>
+
+	</div>
+
 	<p>
 		Things render a bit differently with <code>eventOverlap:false</code>
 	</p>
