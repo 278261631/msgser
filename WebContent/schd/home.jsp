@@ -65,9 +65,13 @@ try {
 <link href='lib/fullcalendar.print.min.css' rel='stylesheet' media='print' />
 <link href='scheduler.min.css' rel='stylesheet' />
 <script src='lib/moment.min.js'></script>
-<script src='lib/jquery.min.js'></script>
+<!-- <script src='lib/jquery.min.js'></script> -->
+<script src='lib/js/jquery-1.11.0.min.js'></script>
 <script src='lib/fullcalendar.min.js'></script>
 <script src='scheduler.min.js'></script>
+<link rel="stylesheet" href="lib/css/Lobibox.min.css">
+<script src="lib/js/bootstrap.min.js"></script>  
+<script src="lib/js/lobibox.min.js"></script>  
 <script type="text/javascript" charset="UTF-8" >
 
 	$(function() { // document ready
@@ -101,30 +105,42 @@ try {
 			resources: <%=jsonString%>,
 			events: <%=envString%>,
 		    eventResize: function(event, delta, revertFunc) {
-
-		        alert(event.title + " end is now " + event.end.format());
-
-		        if (!confirm("is this okay?")) {
-		            revertFunc();
-		        }
+		    	Lobibox.notify.closeAll();
+				Lobibox.notify(						  
+				  'info',
+				  {
+					  sound: false,
+					  size: 'large',
+	                  msg: event.start.format()+'  '+event.end.format()+'<button onclick="saveEvent()">保存（save）</button>'
+				  }
+				);  
 
 		    },
 		    eventDrop: function(event, delta, revertFunc) {
-
-		        alert(event.title + " was dropped on " + event.start.format());
-
-		        if (!confirm("Are you sure about this change?")) {
-		            revertFunc();
-		        }
+		    	Lobibox.notify.closeAll();
+				Lobibox.notify(						  
+						  'info',
+						  {
+							  //closeOnEsc: true,
+							  size: 'large', 
+							  closeOnClick: true, 
+							  //showAfterPrevious: true,
+							  sound: false,
+							  size: 'large',
+							  title: '列表  <span id="prm_event_id">'+event.id +'</span> <span id="prm_event_resourceid">' + event.resourceId +'<span>',
+			                  msg: '<span id="prm_event_start">'+ event.start.format()+'</span> -- <span id="prm_event_end">'+event.end.format()+'</span><button id ="saveEventButton" onclick="saveEvent('+event.id+')">保存（save）</button>'
+						  }
+						);  
 
 		    }
 		});
 	
 	});
 	
-	function callRevert(){
-		revertFunc();
-		alert('r');
+
+	function saveEvent(){
+		alert($('#prm_event_start').html()+'  '+$('#prm_event_end').html());
+		
 	}
 
 </script>
@@ -156,7 +172,8 @@ try {
 
 	<div id='calendar'></div>
 <h1>Apache Shiro Quickstart</h1>
-<a onclick="callRevert()">revert revertFunc</a>
+
+<a onclick="showNotifybox()">notification</a>
 <p>Hi <shiro:guest>Guest</shiro:guest><shiro:user><shiro:principal/></shiro:user>!
     ( <shiro:user><a href="<c:url value="/logout"/>">Log out</a></shiro:user>
     <shiro:guest><a href="<c:url value="/login.jsp"/>">Log in</a> (sample accounts provided)</shiro:guest> )

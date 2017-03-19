@@ -34,6 +34,7 @@
 <p>Hi <shiro:guest>Guest</shiro:guest><shiro:user><shiro:principal/></shiro:user>!
     ( <shiro:user><a href="<c:url value="/logout"/>">Log out</a></shiro:user>
     <shiro:guest><a href="<c:url value="/login.jsp"/>">Log in</a> (sample accounts provided)</shiro:guest> )
+    <p><a href="<c:url value="/schd/home.jsp"/>">schd</a></p>
 </p>
 
 <p>Welcome to the Apache Shiro Quickstart sample application.
