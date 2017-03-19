@@ -76,49 +76,56 @@ try {
 			now: '2017-03-17',
 			editable: true,
 			aspectRatio: 1.8,
-			scrollTime: '1:00',
+			scrollTime: '00:00',
 			minTime: '00:00',
-			//maxTime:'12:00',
+//			maxTime:'48:00', //不科学~
 			header: {
 				left: 'today prev,next',
 				center: 'title',
-				right: 'timelineDay,timelineThreeDays,agendaWeek,month'
+				right: 'timelineDay,timelineTwoDays,timelineThreeDays,agendaWeek,month'
 			},
 			defaultView: 'timelineDay',
 			views: {
 				timelineThreeDays: {
 					type: 'timeline',
 					duration: { days: 3 }
+				},
+				timelineTwoDays: {
+					type: 'timeline',
+					duration: { days: 2 }
 				}
 			},
 			eventOverlap: false, // will cause the event to take up entire resource height
-			resourceAreaWidth: '25%',
-			resourceLabelText: '设备列表',
-			resources: <%=jsonString%>
-			/* [
-				{ id: 'a', title: '-米' },
-				{ id: 'b', title: '-米', eventColor: 'green' },
-				{ id: 'c', title: 'Auditorium C', eventColor: 'orange' },
-				{ id: 'd', title: '小-', children: [
-					{ id: 'd1', title: '--' , eventColor: 'BLACK'},
-					{ id: 'd2', title: '--' , eventColor: 'WHITE'},
-					{ id: 'd3', title: '--' , eventColor: 'PINK'}
-				] },
-				{ id: 'e', title: '-米 ^_^' , eventColor: 'RED'},
-				{ id: 'z', title: 'Auditorium Z' }
-			] */
-			,
-			events: <%=envString%>
-			/* [
-				{ id: '1', resourceId: '1', start: '2017-03-17T02:00:00', end: '2017-03-17T07:00:00', title: '--xxx' },
-				{ id: '2', resourceId: '2', start: '2017-03-17T05:00:00', end: '2017-03-17T12:00:00', title: '--2' },
-				{ id: '3', resourceId: '3', start: '2017-03-16', end: '2017-03-29', title: '--' },
-				{ id: '4', resourceId: '4', start: '2017-03-17T03:00:00', end: '2017-03-17T08:00:00', title: '==影响' },
-				{ id: '5', resourceId: '5', start: '2017-03-17T00:30:00', end: '2017-03-17T02:30:00', title: '-it' }
-			] */
+			resourceAreaWidth: '15%',
+			resourceLabelText: '列表',
+			resources: <%=jsonString%>,
+			events: <%=envString%>,
+		    eventResize: function(event, delta, revertFunc) {
+
+		        alert(event.title + " end is now " + event.end.format());
+
+		        if (!confirm("is this okay?")) {
+		            revertFunc();
+		        }
+
+		    },
+		    eventDrop: function(event, delta, revertFunc) {
+
+		        alert(event.title + " was dropped on " + event.start.format());
+
+		        if (!confirm("Are you sure about this change?")) {
+		            revertFunc();
+		        }
+
+		    }
 		});
 	
 	});
+	
+	function callRevert(){
+		revertFunc();
+		alert('r');
+	}
 
 </script>
 <style>
@@ -149,7 +156,7 @@ try {
 
 	<div id='calendar'></div>
 <h1>Apache Shiro Quickstart</h1>
-
+<a onclick="callRevert()">revert revertFunc</a>
 <p>Hi <shiro:guest>Guest</shiro:guest><shiro:user><shiro:principal/></shiro:user>!
     ( <shiro:user><a href="<c:url value="/logout"/>">Log out</a></shiro:user>
     <shiro:guest><a href="<c:url value="/login.jsp"/>">Log in</a> (sample accounts provided)</shiro:guest> )
