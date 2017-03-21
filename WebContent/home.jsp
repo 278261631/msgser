@@ -25,7 +25,22 @@
 <html>
 <head>
     <link type="text/css" rel="stylesheet" href="<c:url value="/style.css"/>"/>
+    <script src='schd/lib/js/jquery-1.11.0.min.js'></script>
     <title>Apache Shiro Quickstart</title>
+    <script type="text/javascript">
+	    $(function(){
+	        $("#btnAjax").click(function(){
+	            $.post("mvc/getajax",{name:$("#name").val()},function(data){
+	                alert(data);
+	            });
+	        });
+	        $("#btnJson").click(function(){
+	            $.post("mvc/getjson",{name:$("#name").val()},function(data){
+	                alert(data);
+	            });
+	        });
+	    });
+    </script>
 </head>
 <body>
 
@@ -35,7 +50,14 @@
     ( <shiro:user><a href="<c:url value="/logout"/>">Log out</a></shiro:user>
     <shiro:guest><a href="<c:url value="/login.jsp"/>">Log in</a> (sample accounts provided)</shiro:guest> )
     <p><a href="<c:url value="/schd/home.jsp"/>">schd</a></p>
+    <p><a href="<c:url value="/mvc/hello"/>">mvc hello</a></p>
+    <p><a href="<c:url value="/mvc/getjson"/>">mvc hello</a></p>
+    <p><a id='btnJson' >jsonResult</a></p>
+    <p><a href="<c:url value="/mvc/getajax"/>"> ajax </a></p>
+    <p><a id='btnAjax' > ajaxResult </a></p>
 </p>
+<div id='ajaxResult' ></div>
+<div id='jsonResult' ></div>
 
 <p>Welcome to the Apache Shiro Quickstart sample application.
     This page represents the home page of any web application.</p>

@@ -129,7 +129,7 @@ try {
 							  size: 'large',
 							  title: '列表  <span id="prm_event_id">'+event.id +'</span> <span id="prm_event_resourceid">' + event.resourceId +'<span>',
 			                  msg: '<span id="prm_event_start">'+ event.start+'</span> -- <span id="prm_event_end">'+event.end
-			                  	+'</span><button id ="saveEventButton" onclick="saveEvent('+event.id+')">保存（save）</button>';
+			                  	+'</span><button id ="saveEventButton" onclick="saveEvent('+event.id+')">保存（save）</button>'
 			        
 						  }
 						);  
@@ -170,7 +170,7 @@ try {
 		            .addClass( "ui-state-highlight" )
 		            .find( "p" )
 		              .html( "Dropped!" );
-		        };});
+		        }});
 		
 	});
 	
