@@ -50,6 +50,7 @@
     ( <shiro:user><a href="<c:url value="/logout"/>">Log out</a></shiro:user>
     <shiro:guest><a href="<c:url value="/login.jsp"/>">Log in</a> (sample accounts provided)</shiro:guest> )
     <p><a href="<c:url value="/schd/home.jsp"/>">schd</a></p>
+    <p><a href="<c:url value="/schd/home"/>">schd_spring</a></p>
     <p><a href="<c:url value="/mvc/hello"/>">mvc hello</a></p>
     <p><a href="<c:url value="/mvc/getjson"/>">mvc hello</a></p>
     <p><a id='btnJson' >jsonResult</a></p>
