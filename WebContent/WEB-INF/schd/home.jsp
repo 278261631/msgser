@@ -68,7 +68,9 @@
 				  {
 					  sound: false,
 					  size: 'large',
-	                  msg: event.start.format()+'  '+event.end.format()+'<button onclick="saveEvent()">保存（save）</button>'
+					  title: '<span id="prm_event_title">' + event.title +'</span>'+'  <span id="prm_event_id">'+event.id +'</span> <span id="prm_event_resourceid">' + event.resourceId +'</span>',
+	                  msg: '<span id="prm_event_start">'+ event.start.format()+'</span> -- <span id="prm_event_end">'+event.end.format()
+	                  	+'</span><button id ="saveEventButton" onclick="saveEvent('+event.id+')">保存（save）</button>'
 				  }
 				);  
 
@@ -84,8 +86,8 @@
 							  //showAfterPrevious: true,
 							  sound: false,
 							  size: 'large',
-							  title: '列表  <span id="prm_event_id">'+event.id +'</span> <span id="prm_event_resourceid">' + event.resourceId +'<span>',
-			                  msg: '<span id="prm_event_start">'+ event.start+'</span> -- <span id="prm_event_end">'+event.end
+							  title: '<span id="prm_event_title">' + event.title +'</span>'+'  <span id="prm_event_id">'+event.id +'</span> <span id="prm_event_resourceid">' + event.resourceId +'</span>',
+			                  msg: '<span id="prm_event_start">'+ event.start.format()+'</span> -- <span id="prm_event_end">'+event.end.format()
 			                  	+'</span><button id ="saveEventButton" onclick="saveEvent('+event.id+')">保存（save）</button>'
 			        
 						  }
@@ -134,11 +136,12 @@
 
 	function saveEvent(){
 		
-		alert($('#prm_event_start').html()+'  '+$('#prm_event_end').html());
-		$.post("saveEvent",{eventid:$("#prm_event_id").html(),eqpid:$("#prm_event_resourceid").html(),starttime:$("#prm_event_start").html()
-			,endtime:$("#prm_event_end").html()},function(data){
-		}
-            alert(data);
+		//alert($('#prm_event_start').html()+'  '+$('#prm_event_end').html());
+		//console.log($("#prm_event_id").html());
+		//console.log($("#prm_event_resourceid").html());
+		$.post("updateEvent",{eventid:$("#prm_event_id").html(),eqpid:$("#prm_event_resourceid").html(),starttime:$("#prm_event_start").html()
+			,endtime:$("#prm_event_end").html(),userid:'1',title:$("#prm_event_title").html()},function(data){
+         //   console.log(data);
         });
 	}
 

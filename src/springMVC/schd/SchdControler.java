@@ -30,7 +30,7 @@ public class SchdControler {
 //	}
     //pass the parameters to front-end
     @RequestMapping("/home")
-    public String showPerson(Map<String,Object> map) throws SQLException{
+    public String showSchdHome(Map<String,Object> map) throws SQLException{
     	EqpmentDAO dao=new EqpmentDAOImpl();
 		EventDAO evtdao=new EventDAOImpl();
 		String resString="";
@@ -48,6 +48,8 @@ public class SchdControler {
 		envString  = JsonGen.GenEventListJson(events);
 		map.put("resString", resString);
 		map.put("envString", envString);
+		System.out.println(resString);
+		System.out.println(envString);
         return "/schd/home";
     }
 	
@@ -78,10 +80,12 @@ public class SchdControler {
     }
 	
 	@ResponseBody
-	@RequestMapping("/saveEvent")
-	public  Event saveEvent(Event env) throws SQLException{
+	@RequestMapping("/updateEvent")
+	public  Event updateEvent(Event env) throws SQLException{
 		EventDAO evtdao=new EventDAOImpl();
-		evtdao.insert(env);
+//		evtdao.insert(env);
+		evtdao.updateByPrimaryKey(env);
+		
 		return env;
 	}
 		

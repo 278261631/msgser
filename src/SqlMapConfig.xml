@@ -9,7 +9,8 @@
         <!-- 数据源 -->
         <dataSource type="SIMPLE">
             <property name="JDBC.Driver" value="org.sqlite.JDBC" />
-            <property name="JDBC.ConnectionURL" value="jdbc:sqlite::resource:yuyuedb.db" />
+<!--             <property name="JDBC.ConnectionURL" value="jdbc:sqlite::resource:yuyuedb.db" /> -->
+            <property name="JDBC.ConnectionURL" value="jdbc:sqlite:D:\gitroot\github\msgser\src\yuyuedb.db" />
             <property name="JDBC.Username" value="" />
             <property name="JDBC.Password" value="" />
         </dataSource>
