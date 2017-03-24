@@ -22,7 +22,7 @@ public class JsonResourcesDomain {
 	private String title;
 	private String eventColor;
 	private List<JsonResourcesDomain> children;
-	public static String [] EventColors={"Aqua","Yellow","Red","Green","Blue","Purple","orange",
+	public static String [] EventColors={"Aqua","Yellow","Red","Green","Blue","Purple",
 			"cyan","Violet","magenta","tangerineindigo","peach","salmon","orchid"};
 	public String getId() {
 		return id;

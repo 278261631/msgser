@@ -62,6 +62,10 @@
 			events: ${envString},
 			//events: data.envString,
 		    eventResize: function(event, delta, revertFunc) {
+		    	event.ismodified=true;
+		    	event.textColor='blue';
+		    	event.borderColor='red';
+		    	//event.color='orange';
 		    	Lobibox.notify.closeAll();
 				Lobibox.notify(						  
 				  'info',
@@ -76,12 +80,15 @@
 
 		    },
 		    eventDrop: function(event, delta, revertFunc) {
+		    	event.ismodified=true;
+		    	event.textColor='blue';
+		    	event.borderColor='red';
+		    	//event.color='orange';
 		    	Lobibox.notify.closeAll();
 				Lobibox.notify(						  
 						  'info',
 						  {
 							  //closeOnEsc: true,
-							  size: 'large', 
 							  closeOnClick: true, 
 							  //showAfterPrevious: true,
 							  sound: false,
@@ -102,7 +109,56 @@
 					// if so, remove the element from the "Draggable Events" list
 					$(this).remove();
 				}
-			}
+			},
+			eventClick: function(calEvent, jsEvent, view) {
+		    	Lobibox.notify.closeAll();
+				Lobibox.notify(						  
+						  'info',
+						  {
+							  //closeOnEsc: true,
+							  size: 'large', 
+							  closeOnClick: true, 
+							  //showAfterPrevious: true,
+							  sound: false,
+							  size: 'large',
+							  title: '<span id="prm_event_title">' + calEvent.title +'</span>',
+			                  msg: '<a id ="saveEventButton" onclick="saveEvent('+calEvent.id+')">保存（save）</a>   '
+			                  	+'<a id ="addEventPlanButton" onclick="addEventPlan('+calEvent.id+')">添加任务（addPlan）</a>'
+			        
+						  }
+						);  		    					
+				if (calEvent.isunsave) {
+					alert('unsave');
+					return;
+				}
+		    },
+		    eventReceive : function( event ) { 
+		    	event.borderColor='red';
+		    	event.textColor='red';
+		    	var d = new Date();
+		    	event.isunsave=true;
+		    	event.id=event.resourceId+'_userid_'+d.getTime();
+		    	event.end=$.fullCalendar.moment.parseZone(event.start.clone().add(1, 'H').format());
+		    	console.log(event.end.format());
+		    	Lobibox.notify.closeAll();
+				Lobibox.notify(						  
+						  'info',
+						  {
+							  //closeOnEsc: true,
+							  size: 'large', 
+							  closeOnClick: true, 
+							  //showAfterPrevious: true,
+							  sound: false,
+							  size: 'large',
+							  title: '<span id="prm_event_title">' + event.title +'</span>'+'  <span id="prm_event_id">'+event.id +'</span> <span id="prm_event_resourceid">' + event.resourceId +'</span>',
+			                  msg: '<span id="prm_event_start">'+ event.start.format()+'</span> -- <span id="prm_event_end">'
+			                  +event.end.format()
+			                  	+'</span><button id ="saveEventButton" onclick="saveEvent('+event.id+')">保存（save）</button>'
+			        
+						  }
+						);  		    	
+		    	 $('#calendar').fullCalendar('updateEvent', event);
+		    }
 		});
 	
 
@@ -134,17 +190,47 @@
 	});
 	
 
-	function saveEvent(){
+	function saveEvent(envId){
 		
-		//alert($('#prm_event_start').html()+'  '+$('#prm_event_end').html());
-		//console.log($("#prm_event_id").html());
-		//console.log($("#prm_event_resourceid").html());
-		$.post("updateEvent",{eventid:$("#prm_event_id").html(),eqpid:$("#prm_event_resourceid").html(),starttime:$("#prm_event_start").html()
+/* 		$.post("updateEvent",{eventid:$("#prm_event_id").html(),eqpid:$("#prm_event_resourceid").html(),starttime:$("#prm_event_start").html()
 			,endtime:$("#prm_event_end").html(),userid:'1',title:$("#prm_event_title").html()},function(data){
-         //   console.log(data);
-        });
+        }); */
+        var objEvent=$('#calendar').fullCalendar( 'clientEvents', envId )[0];
+		console.log(objEvent);
+		if(objEvent.isunsave){
+	        $.post("saveNewEvent",{eventid:objEvent.id,eqpid:objEvent.resourceId,starttime:objEvent.start.format()
+				,endtime:objEvent.end.format(),userid:'1',title:objEvent.title},function(data){
+					objEvent.ismodified=false;
+					objEvent.textColor='white';
+					objEvent.borderColor='';
+	        });
+	       return;
+		}
+		if(objEvent.ismodified){
+	        $.post("updateEvent",{eventid:objEvent.id,eqpid:objEvent.resourceId,starttime:objEvent.start.format()
+				,endtime:objEvent.end.format(),userid:'1',title:objEvent.title},function(data){
+	        objEvent.ismodified=false;
+	        objEvent.textColor='white';
+	        objEvent.borderColor='';
+	        console.log(objEvent);
+	        $('#calendar').fullCalendar( 'updateEvent', objEvent )
+	        }); 
+		}
 	}
 
+	function addEventPlan(envId){		
+		var objEvent=$('#calendar').fullCalendar( 'clientEvents', envId )[0];
+		console.log(objEvent);
+		if(objEvent.isunsave || objEvent.ismodified){
+			alert('保存修改后才能添加？');	       
+	        return;
+		}
+	        $.post("updateEvent",{eventid:objEvent.id,eqpid:$("#prm_event_resourceid").html(),starttime:$("#prm_event_start").html()
+				,endtime:$("#prm_event_end").html(),userid:'1',title:$("#prm_event_title").html()},function(data){
+	        });
+	}
+
+	
 </script>
 <style>
 
@@ -208,11 +294,10 @@
 
 		<div id='external-events'>
 			<h4>Draggable Events</h4>
-			<div class='fc-event'>My Event 1</div>
-			<div class='fc-event'>My Event 2</div>
-			<div class='fc-event'>My Event 3</div>
-			<div class='fc-event'>My Event 4</div>
-			<div class='fc-event'>My Event 5</div>
+			<div class='fc-event' data-start='' data-end='' data-id='' 	>整晚</div>
+			<div class='fc-event'>一个小时</div>
+			<div class='fc-event'>连续一个月</div>
+			<div class='fc-event'>连续一年</div>
 			<p>
 				<input type='checkbox' id='drop-remove' />
 				<label for='drop-remove'>remove after drop</label>

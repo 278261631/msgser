@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.subject.Subject;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -48,6 +50,8 @@ public class SchdControler {
 		envString  = JsonGen.GenEventListJson(events);
 		map.put("resString", resString);
 		map.put("envString", envString);
+		Subject currentUser = SecurityUtils.getSubject();
+		
 		System.out.println(resString);
 		System.out.println(envString);
         return "/schd/home";
