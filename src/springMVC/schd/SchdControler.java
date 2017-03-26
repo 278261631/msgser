@@ -6,11 +6,20 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.jms.JMSException;
+
+import org.apache.commons.configuration2.ex.ConfigurationException;
+import org.apache.log4j.Logger;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.interstellarexploration.remoteobs.asputil.amq.AmqSender;
+import com.interstellarexploration.remoteobs.asputil.plangen.PlanCheckExeption;
+import com.interstellarexploration.remoteobs.asputil.plangen.PlanFileContent;
+import com.interstellarexploration.remoteobs.asputil.plangen.plantarget.NormalPlan;
 
 import domain.dao.EqpmentDAO;
 import domain.dao.EqpmentDAOImpl;
@@ -95,11 +104,19 @@ public class SchdControler {
 
 	@ResponseBody
 	@RequestMapping("/addEventPlan")
-	public  Event addEventPlan(Event env) throws SQLException{
+	public  Event addEventPlan(Event env) throws SQLException , JMSException,ConfigurationException {
 		EventDAO evtdao=new EventDAOImpl();
-//		evtdao.insert(env);
-//		evtdao.updateByPrimaryKey(env);
+		AmqSender asender=new AmqSender();
+		PlanFileContent planFile = new PlanFileContent();
+		NormalPlan planA = new NormalPlan("M 42", 1,new int[]{1,2},new int[]{1,2},new int[]{1,2});
+		planFile.getTargetList().add(planA);
+    	 try {
+			asender.sender(planFile.toOutString());
+			Logger.getLogger("").debug("---------------"+planFile.toOutString());
+		} catch (PlanCheckExeption e) {
 		
+			e.printStackTrace();
+		}
 		return env;
 	}
 		
