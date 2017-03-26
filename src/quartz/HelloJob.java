@@ -44,13 +44,11 @@ public class HelloJob implements Job {
     public void execute(JobExecutionContext context)
         throws JobExecutionException {
 
-    	try {
-			Runtime.getRuntime().exec("notepad");
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-        // Say Hello to the World and display the date/time
+//    	try {
+//			Runtime.getRuntime().exec("notepad");
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
         _log.info("Hello World! - " + new Date());
     }
 

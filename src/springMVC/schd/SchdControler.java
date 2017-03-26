@@ -92,6 +92,16 @@ public class SchdControler {
 		
 		return env;
 	}
+
+	@ResponseBody
+	@RequestMapping("/addEventPlan")
+	public  Event addEventPlan(Event env) throws SQLException{
+		EventDAO evtdao=new EventDAOImpl();
+//		evtdao.insert(env);
+//		evtdao.updateByPrimaryKey(env);
+		
+		return env;
+	}
 		
     @RequestMapping("/getajax")
     public void getPerson(String name,PrintWriter pw){

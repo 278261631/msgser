@@ -32,28 +32,30 @@
 <script type="text/javascript" charset="UTF-8" >
 	$(function() { // document ready
 		$('#calendar').fullCalendar({
-			now: '2017-03-17',
+			now: '2017-03-16',
 			editable: true,
 			aspectRatio: 1.8,
 			scrollTime: '00:00',
-			minTime: '00:00',
-//			maxTime:'48:00', //不科学~
+			minTime: '23:00',
+			maxTime: '30:00',
 			header: {
 				left: 'today prev,next',
 				center: 'title',
 				right: 'timelineDay,timelineTwoDays,timelineThreeDays,agendaWeek,month'
 			},
-			defaultView: 'timelineDay',
+			defaultView: 'timelineTwoDays',
 			views: {
 				timelineThreeDays: {
 					type: 'timeline',
-					duration: { days: 3 }
+					duration: { days:3}
 				},
 				timelineTwoDays: {
 					type: 'timeline',
 					duration: { days: 2 }
 				}
 			},
+			duration: { hours:36  },
+			slotDuration:'00:10:00',
 			eventOverlap: false, // will cause the event to take up entire resource height
 			resourceAreaWidth: '15%',
 			resourceLabelText: '列表',
@@ -132,6 +134,14 @@
 					return;
 				}
 		    },
+			eventRender: function(event, el) {
+				// render the timezone offset below the event title
+				if (event.start.hasZone()) {
+					el.find('.fc-title').after(
+						$('<div class="tzo"/>').text(event.start.format('Z'))
+					);
+				}
+			},
 		    eventReceive : function( event ) { 
 		    	event.borderColor='red';
 		    	event.textColor='red';
@@ -187,6 +197,12 @@
 		              .html( "Dropped!" );
 		        }});
 		
+
+		// when the timezone selector changes, dynamically change the calendar option
+		$('#timezone-selector').on('change', function() {
+			$('#calendar').fullCalendar('option', 'timezone', this.value || false);
+		});
+		$('#calendar').fullCalendar('option', 'timezone', 'local');
 	});
 	
 
@@ -225,7 +241,7 @@
 			alert('保存修改后才能添加？');	       
 	        return;
 		}
-	        $.post("updateEvent",{eventid:objEvent.id,eqpid:$("#prm_event_resourceid").html(),starttime:$("#prm_event_start").html()
+	        $.post("addEventPlan",{eventid:objEvent.id,eqpid:$("#prm_event_resourceid").html(),starttime:$("#prm_event_start").html()
 				,endtime:$("#prm_event_end").html(),userid:'1',title:$("#prm_event_title").html()},function(data){
 	        });
 	}
@@ -284,11 +300,36 @@
 		margin: 0;
 		vertical-align: middle;
 	}
+	.left { float: left }
+	.right { float: right }
+	.clear { clear: both }
+	.tzo {
+		color: #000;
+	}
 
 </style>
     
 </head>
 <body>
+	<div id='top'>
+
+		<div class='left'>
+			Timezone:
+			<select id='timezone-selector'>
+				<option value='' selected>none</option>
+				<option value='local'>local</option>
+				<option value='UTC'>UTC</option>
+			</select>
+		</div>
+
+		<div class='right'>
+			<span id='loading'>loading...</span>
+		
+		</div>
+
+		<div class='clear'></div>
+	</div>
+
 
 	<div id='wrap'>
 

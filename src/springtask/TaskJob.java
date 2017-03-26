@@ -28,7 +28,7 @@ public class TaskJob {
 	List<Event> eventTodayList=null;
 	int a=0;
 	
-    @Scheduled(fixedRate=5000 )  
+    @Scheduled(fixedRate=3600000 )  
     public void ececJob() throws SchedulerException {
         Logger log = LoggerFactory.getLogger(SimpleExample.class);
         SchedulerFactory sf = new StdSchedulerFactory();
