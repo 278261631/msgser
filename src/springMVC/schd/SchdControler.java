@@ -1,7 +1,11 @@
 package springMVC.schd;
 
+import static org.quartz.JobBuilder.newJob;
+import static org.quartz.TriggerBuilder.newTrigger;
+
 import java.io.PrintWriter;
 import java.sql.SQLException;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,6 +16,15 @@ import org.apache.commons.configuration2.ex.ConfigurationException;
 import org.apache.log4j.Logger;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
+import org.quartz.DateBuilder;
+import org.quartz.JobDetail;
+import org.quartz.Scheduler;
+import org.quartz.SchedulerException;
+import org.quartz.SchedulerFactory;
+import org.quartz.Trigger;
+import org.quartz.DateBuilder.IntervalUnit;
+import org.quartz.impl.StdSchedulerFactory;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -29,6 +42,8 @@ import domain.model.Eqpment;
 import domain.model.EqpmentExample;
 import domain.model.Event;
 import domain.model.EventExample;
+import quartz.HelloJob;
+import quartz.SimpleExample;
 import util.JsonGen;
 
 @Controller
@@ -104,8 +119,28 @@ public class SchdControler {
 
 	@ResponseBody
 	@RequestMapping("/addEventPlan")
-	public  Event addEventPlan(Event env) throws SQLException , JMSException,ConfigurationException {
+	public  Event addEventPlan(Event env) throws SQLException , JMSException,ConfigurationException, SchedulerException {
 		EventDAO evtdao=new EventDAOImpl();
+//	    Logger log = LoggerFactory.getLogger(SimpleExample.class);
+	    Logger log = Logger.getLogger(SimpleExample.class);
+	    log.info("------- Initializing ----------------------");
+	    SchedulerFactory sf = new StdSchedulerFactory();
+	    Scheduler sched = sf.getScheduler();
+//	    Date runTime = evenMinuteDate(new Date());
+	    Date runTime =   DateBuilder.futureDate(3, IntervalUnit.SECOND);
+	    log.info("------- Scheduling Job  -------------------");
+	    JobDetail job = newJob(HelloJob.class).withIdentity("job1", "group1").build();
+	    // Trigger the job to run on the next round minute
+	    Trigger trigger = newTrigger().withIdentity("trigger1", "group1").startAt(runTime).build();
+
+	    // Tell quartz to schedule the job using our trigger
+	    sched.scheduleJob(job, trigger);
+	    log.info(job.getKey() + " will run at: " + runTime);
+	    sched.start();
+	    log.info("------- Started Scheduler -----------------");
+
+		
+		
 		AmqSender asender=new AmqSender();
 		PlanFileContent planFile = new PlanFileContent();
 		NormalPlan planA = new NormalPlan("M 42", 1,new int[]{1,2},new int[]{1,2},new int[]{1,2});
