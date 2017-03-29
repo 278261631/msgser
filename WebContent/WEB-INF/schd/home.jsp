@@ -28,7 +28,9 @@
 <script src='lib/fullcalendar.min.js'></script>
 <script src='scheduler.min.js'></script>
 <script src="lib/js/bootstrap.min.js"></script>  
-<script src="lib/js/lobibox.min.js"></script>  
+<script src="lib/js/lobibox.min.js"></script>
+<link rel="stylesheet" href="<c:url value="/highlight/styles/arta.css"/>" /> 
+<script src="<c:url value="/highlight/highlight.pack.js" />" ></script>  
 <script type="text/javascript" charset="UTF-8" >
 	$(function() { // document ready
 		$('#calendar').fullCalendar({
@@ -203,6 +205,7 @@
 			$('#calendar').fullCalendar('option', 'timezone', this.value || false);
 		});
 		$('#calendar').fullCalendar('option', 'timezone', 'local');
+		$('pre code').each(function(i, block) {hljs.highlightBlock(block);});
 	});
 	
 
@@ -327,6 +330,28 @@
 		
 		</div>
 
+		<div class='clear'></div>
+	</div>
+	<pre><code class="json">{name:xxx ,value="uu","c":1,'-':'-',"str":"string"} </code>
+<code>
+<span id="">ID:</span> <span id="">value:</span> 
+<span id="">name:</span> <span id="">value:</span> 
+<span id="">ID:</span> <span id="">value:</span> 
+	</code><span>save</span> <span>name</span></pre>
+	
+	<div id='option-div'>
+		<div class='left'>
+			envid:<span>xx</span>
+			sourid:<span>xx</span>
+			sourtitle:<span>xx</span>
+			start:<span>xx</span>
+			end:<span>xx</span>
+			<span>保存</span>
+			<span>增加Plan</span>			
+		</div>
+		<div class='right'>
+			<span id='loading'>loading...</span>
+		</div>
 		<div class='clear'></div>
 	</div>
 
