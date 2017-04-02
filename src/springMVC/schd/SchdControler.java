@@ -24,7 +24,6 @@ import org.quartz.SchedulerFactory;
 import org.quartz.Trigger;
 import org.quartz.DateBuilder.IntervalUnit;
 import org.quartz.impl.StdSchedulerFactory;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -42,8 +41,7 @@ import domain.model.Eqpment;
 import domain.model.EqpmentExample;
 import domain.model.Event;
 import domain.model.EventExample;
-import quartz.HelloJob;
-import quartz.SimpleExample;
+import quartz.SendPlanJob;
 import util.JsonGen;
 
 @Controller
@@ -120,16 +118,16 @@ public class SchdControler {
 	@ResponseBody
 	@RequestMapping("/addEventPlan")
 	public  Event addEventPlan(Event env) throws SQLException , JMSException,ConfigurationException, SchedulerException {
+		Logger log = Logger.getLogger(this.getClass());
+		log.debug("-----startTime--------" + env.getStarttime());
 		EventDAO evtdao=new EventDAOImpl();
-//	    Logger log = LoggerFactory.getLogger(SimpleExample.class);
-	    Logger log = Logger.getLogger(SimpleExample.class);
 	    log.info("------- Initializing ----------------------");
 	    SchedulerFactory sf = new StdSchedulerFactory();
 	    Scheduler sched = sf.getScheduler();
 //	    Date runTime = evenMinuteDate(new Date());
-	    Date runTime =   DateBuilder.futureDate(3, IntervalUnit.SECOND);
+	    Date runTime =   DateBuilder.futureDate(10, IntervalUnit.SECOND);
 	    log.info("------- Scheduling Job  -------------------");
-	    JobDetail job = newJob(HelloJob.class).withIdentity("job1", "group1").build();
+	    JobDetail job = newJob(SendPlanJob.class).withIdentity("job1", "group1").build();
 	    // Trigger the job to run on the next round minute
 	    Trigger trigger = newTrigger().withIdentity("trigger1", "group1").startAt(runTime).build();
 
@@ -141,17 +139,7 @@ public class SchdControler {
 
 		
 		
-		AmqSender asender=new AmqSender();
-		PlanFileContent planFile = new PlanFileContent();
-		NormalPlan planA = new NormalPlan("M 42", 1,new int[]{1,2},new int[]{1,2},new int[]{1,2});
-		planFile.getTargetList().add(planA);
-    	 try {
-			asender.sender(planFile.toOutString());
-			Logger.getLogger("").debug("---------------"+planFile.toOutString());
-		} catch (PlanCheckExeption e) {
-		
-			e.printStackTrace();
-		}
+
 		return env;
 	}
 		

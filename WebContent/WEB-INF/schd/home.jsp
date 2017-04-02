@@ -21,6 +21,7 @@
     <link href='lib/fullcalendar.min.css' rel='stylesheet' />
 <link href='lib/fullcalendar.print.min.css' rel='stylesheet' media='print' />
 <link rel="stylesheet" href="lib/css/Lobibox.min.css">
+<link rel="stylesheet" href="lib/css/jquery-ui.css">
 <link href='scheduler.min.css' rel='stylesheet' />
 <script src='lib/moment.min.js'></script>
 <script src='lib/js/jquery-1.11.0.min.js'></script>
@@ -32,7 +33,118 @@
 <link rel="stylesheet" href="<c:url value="/highlight/styles/arta.css"/>" /> 
 <script src="<c:url value="/highlight/highlight.pack.js" />" ></script>  
 <script type="text/javascript" charset="UTF-8" >
-	$(function() { // document ready
+	$(function() { 
+	    $( "#star_othername" ).autocomplete({
+	        source: "searchsac_other",
+	        minLength: 1,
+	        focus: function( event, ui ) {
+	            $( "#star_othername" ).val( ui.item.objvalue.other );
+	            $( "#star_objectname" ).val( ui.item.objvalue.object );
+	            $( "#star_ra_value" ).val( ui.item.ra_value );
+	            $( "#star_dec_value" ).val( ui.item.dec_value );
+	            return false;
+	          },
+	        select: function( event, ui ) {
+	            $( "#star_othername" ).val( ui.item.objvalue.other );
+	            $( "#star_objectname" ).val( ui.item.objvalue.object );
+	            $( "#star_ra_value" ).val( ui.item.ra_value );
+	            $( "#star_dec_value" ).val( ui.item.dec_value );
+	          //console.log( "Selected: " + ui.item.value + " aka " + ui.item.id );
+	          return false;
+	        }
+	      });
+	    var dialog, form,
+	      name = $( "#name" ),
+	      email = $( "#email" ),
+	      password = $( "#password" ),
+	      allFields = $( [] ).add( name ).add( email ).add( password ),
+	      tips = $( ".validateTips" );
+	    
+	    $( "#star_objectname" ).autocomplete({
+	        source: "searchsac_object",
+	        minLength: 1,
+	        focus: function( event, ui ) {
+	            $( "#star_othername" ).val( ui.item.objvalue.other );
+	            $( "#star_objectname" ).val( ui.item.objvalue.object );
+	            $( "#star_ra_value" ).val( ui.item.ra_value );
+	            $( "#star_dec_value" ).val( ui.item.dec_value );
+	            return false;
+	          },
+	        select: function( event, ui ) {
+	            $( "#star_othername" ).val( ui.item.objvalue.other );
+	            $( "#star_objectname" ).val( ui.item.objvalue.object );
+	            $( "#star_ra_value" ).val( ui.item.ra_value );
+	            $( "#star_dec_value" ).val( ui.item.dec_value );
+	          
+	          return false;
+	        }
+	      });
+		   
+	      $( "#save_event_plan" ).button().on( "click", function() {
+	    	  var objEvent=$('#calendar').fullCalendar( 'clientEvents', $('#event_id').val() )[0];
+	    	  //console.log(objEvent);
+	    	  if (!objEvent ){$( "#message_dialog_select_event" ).dialog({buttons: {"我知道了": function() {$( this ).dialog( "close" );}}});return;}
+				if (objEvent.isunsave || objEvent.ismodified ) {
+					$( "#message_dialog_save_event" ).dialog({
+					      resizable: false,
+					      height: "auto",
+					      width: 400,
+					      modal: true,
+					      buttons: {
+					        "保存": function() {
+					          $( this ).dialog( "close" );
+					        },
+					        "取消": function() {
+					          $( this ).dialog( "close" );
+					        }
+					      }
+					    });				
+				}else{
+						//save plan
+				}
+	      });	   
+	      $( "#commit_event_plan" ).button().on( "click", function() {
+	    	  var objEvent=$('#calendar').fullCalendar( 'clientEvents', $('#event_id').val() )[0];
+	    	  //console.log(objEvent);
+	    	  if (!objEvent ){$( "#message_dialog_select_event" ).dialog({buttons: {"我知道了": function() {$( this ).dialog( "close" );}}});return;}
+				if ( objEvent.isunsave || objEvent.ismodified ) {
+					$( "#message_dialog_save_event" ).dialog({
+					      resizable: false,
+					      height: "auto",
+					      width: 400,
+					      modal: true,
+					      buttons: {
+					        "保存": function() {
+					          $( this ).dialog( "close" );
+					        },
+					        "取消": function() {
+					          $( this ).dialog( "close" );
+					        }
+					      }
+					    });				
+				}else{
+					$('#message_dialog_commit_plan_value').html(objEvent.start.format());
+					$( "#message_dialog_commit_plan" ).dialog({
+					      resizable: false,
+					      height: "auto",
+					      width: 400,
+					      modal: true,
+					      buttons: {
+					        "提交计划": function() {
+					    	        $.post("addEventPlan",{eventid:objEvent.id,starttime:objEvent.start.format()
+					    				,endtime:objEvent.end.format(),userid:'1'},function(data){
+					    					console.log(data);
+					    	        });       	
+					          $( this ).dialog( "close" );
+					        },
+					        "取消": function() {
+					          $( this ).dialog( "close" );
+					        }
+					      }
+					    });		
+				}
+		      });
+	    
 		$('#calendar').fullCalendar({
 			now: '2017-03-16',
 			editable: true,
@@ -115,26 +227,26 @@
 				}
 			},
 			eventClick: function(calEvent, jsEvent, view) {
-		    	Lobibox.notify.closeAll();
-				Lobibox.notify(						  
-						  'info',
-						  {
-							  //closeOnEsc: true,
-							  size: 'large', 
-							  closeOnClick: true, 
-							  //showAfterPrevious: true,
-							  sound: false,
-							  size: 'large',
-							  title: '<span id="prm_event_title">' + calEvent.title +'</span>',
-			                  msg: '<a id ="saveEventButton" onclick="saveEvent('+calEvent.id+')">保存（save）</a>   '
-			                  	+'<a id ="addEventPlanButton" onclick="addEventPlan('+calEvent.id+')">添加任务（addPlan）</a>'
-			        
-						  }
-						);  		    					
-				if (calEvent.isunsave) {
-					alert('unsave');
-					return;
-				}
+				if (calEvent.isunsave || calEvent.ismodified ) {
+					$( "#message_dialog_save_event" ).dialog({
+					      resizable: false,
+					      height: "auto",
+					      width: 400,
+					      modal: true,
+					      buttons: {
+					        "保存": function() {
+					          $( this ).dialog( "close" );
+					        },
+					        "取消": function() {
+					          $( this ).dialog( "close" );
+					        }
+					      }
+					    });				
+				}else{
+					$('#event_id').val(calEvent.id);
+					$('#event_title').val(calEvent.title);
+					$('#event_resourceId').val(calEvent.resourceId);
+				}				    					
 		    },
 			eventRender: function(event, el) {
 				// render the timezone offset below the event title
@@ -236,26 +348,26 @@
 	        }); 
 		}
 	}
-
+/* 
 	function addEventPlan(envId){		
 		var objEvent=$('#calendar').fullCalendar( 'clientEvents', envId )[0];
 		console.log(objEvent);
 		if(objEvent.isunsave || objEvent.ismodified){
-			alert('保存修改后才能添加？');	       
+			alert('保存修改后才能添加');	       
 	        return;
 		}
 	        $.post("addEventPlan",{eventid:objEvent.id,eqpid:$("#prm_event_resourceid").html(),starttime:$("#prm_event_start").html()
 				,endtime:$("#prm_event_end").html(),userid:'1',title:$("#prm_event_title").html()},function(data){
 	        });
 	}
+	 */
 	
 	
-	
-	function searchsac(){		
-        $.post("searchsac",{star_name :'xxxxx'},function(data){
+/* 	function searchsac(){
+        $.post("searchsac",{star_name :'M42'},function(data){
         	console.log(data)
         });
-	}
+	} */
 	
 </script>
 <style>
@@ -318,51 +430,50 @@
 	}
 
 </style>
-    
+
 </head>
 <body>
 	<div id='top'>
-
 		<div class='left'>
-			Timezone:
+			时区(Timezone):
 			<select id='timezone-selector'>
 				<option value='' selected>none</option>
 				<option value='local'>local</option>
 				<option value='UTC'>UTC</option>
 			</select>
 		</div>
-
-		<div class='right'>
-			<span id='loading'>loading...</span>
-		
-		</div>
-
-		<div class='clear'></div>
-	</div>
-	<pre><code class="json">{name:xxx ,value="uu","c":1,'-':'-',"str":"string"} </code>
-<code>
-<span id="">ID:</span> <span id="">value:</span> 
-<span id="">name:</span> <span id="">value:</span> 
-<span id="">ID:</span> <span id="">value:</span> 
-	</code><span>save </span><span onClick='searchsac()'>sac </span><span>send </span></pre>
-	
-	<div id='option-div'>
-		<div class='left'>
-			envid:<span>xx</span>
-			sourid:<span>xx</span>
-			sourtitle:<span>xx</span>
-			start:<span>xx</span>
-			end:<span>xx</span>
-			<span>保存</span>
-			<span>增加Plan</span>			
-		</div>
 		<div class='right'>
 			<span id='loading'>loading...</span>
 		</div>
 		<div class='clear'></div>
 	</div>
+<fieldset>
+<div>
 
+</div>
+<div class="ui-widget">
+  <label for="event_id">预约编号: </label>
+  <input id="event_id">
+  <label for="event_title">预约备注（Event Tile）: </label>
+  <input id="event_title">
+  <label for="event_resourceId">设备编号: </label>
+  <input id="event_resourceId">
+  <label for="star_objectname">目标名（SAC Name）: </label>
+  <input id="star_objectname">
+  <label for="star_othername">常用名（SAC Other Name）: </label>
+  <input id="star_othername">
+  <label for="star_ra_value">RA: </label>
+  <input id="star_ra_value">
+  <label for="star_dec_value">Dec: </label>
+  <input id="star_dec_value">
+  <label for="event_start_format">开始时间: </label>
+  <input id="test_delay_time">
+  <button id="save_event_plan">保存计划（Save Plan）</button>
+  <button id="commit_event_plan">提交计划（Commit Plan）</button>
+  
+</div>
 
+</fieldset>
 	<div id='wrap'>
 
 		<div id='external-events'>
@@ -388,45 +499,27 @@
 	</p>
 
 	<div id='calendar'></div>
-<h1>Apache Shiro Quickstart</h1>
 
-<a onclick="showNotifybox()">notification</a>
 <p>Hi <shiro:guest>Guest</shiro:guest><shiro:user><shiro:principal/></shiro:user>!
     ( <shiro:user><a href="<c:url value="/logout"/>">Log out</a></shiro:user>
     <shiro:guest><a href="<c:url value="/login.jsp"/>">Log in</a> (sample accounts provided)</shiro:guest> )
 </p>
+ 
 
-<p>Welcome to the Apache Shiro Quickstart sample application.
-    This page represents the home page of any web application.</p>
-
-<shiro:user><p>Visit your <a href="<c:url value="/account"/>">account page</a>.</p></shiro:user>
-<shiro:guest><p>If you want to access the user-only <a href="<c:url value="/account"/>">account page</a>,
-    you will need to log-in first.</p></shiro:guest>
-
-<h2>Roles</h2>
-
-<p>To show some taglibs, here are the roles you have and don't have. Log out and log back in under different user
-    accounts to see different roles.</p>
-
-<h3>Roles you have</h3>
-
-<p>
-    <shiro:hasRole name="admin">admin<br/></shiro:hasRole>
-    <shiro:hasRole name="president">president<br/></shiro:hasRole>
-    <shiro:hasRole name="darklord">darklord<br/></shiro:hasRole>
-    <shiro:hasRole name="goodguy">goodguy<br/></shiro:hasRole>
-    <shiro:hasRole name="schwartz">schwartz<br/></shiro:hasRole>
-</p>
-
-<h3>Roles you DON'T have</h3>
-
-<p>
-    <shiro:lacksRole name="admin">admin<br/></shiro:lacksRole>
-    <shiro:lacksRole name="president">president<br/></shiro:lacksRole>
-    <shiro:lacksRole name="darklord">darklord<br/></shiro:lacksRole>
-    <shiro:lacksRole name="goodguy">goodguy<br/></shiro:lacksRole>
-    <shiro:lacksRole name="schwartz">schwartz<br/></shiro:lacksRole>
-</p>
+<div style="display:none">
+	<div id="dialog-confirm" title="Empty the recycle bin?">
+	  <p><span class="ui-icon ui-icon-alert" style="float:left; margin:12px 12px 20px 0;"></span>需要先保存预约</p>
+	</div>
+	<div id="message_dialog_commit_plan" title="是否提交计划">
+	  提交后会在预约时间（<span id="message_dialog_commit_plan_value"></span>）执行，是否提交计划？
+	</div>
+	<div id="message_dialog_save_event" title="是否保存预约时段？">
+	  	保存计划之后才可以提交计划。
+	</div>
+	<div id="message_dialog_select_event" title="需要选择时段">
+	  	鼠标点击选择时段
+	</div>
+</div>
 
 </body>
 </html>

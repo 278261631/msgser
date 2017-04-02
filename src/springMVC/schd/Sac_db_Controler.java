@@ -5,8 +5,10 @@ import static org.quartz.TriggerBuilder.newTrigger;
 
 import java.io.PrintWriter;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -84,18 +86,58 @@ public class Sac_db_Controler {
     }
 	
 	@ResponseBody
-	@RequestMapping("/searchsac")
-	public  List searchsac(String star_name) throws SQLException{
-		star_name=star_name == null ? "" :star_name.trim();
-		star_name=star_name.replace(' ', '%');
-		star_name="%"+star_name+"%";
-		Sac_deepskyDAO deepSkyDao=new Sac_deepskyDAOImpl();
-//		Sac_deepskyExample example = new Sac_deepskyExample();
-//		example.createCriteria().andObjectLike(star_name).;
-//		example.or(example.createCriteria().andOtherLike(star_name));
-
+	@RequestMapping("/searchsac_other")
+	public  List<Map<String, Object>> searchsac_other(String term) throws SQLException{
+		term=term == null ? "" :term.trim();
+//		star_name=star_name.replace(' ', '%');
+//		star_name="%"+star_name+"%";
+		Sac_deepskyDAOImpl deepSkyDao=new Sac_deepskyDAOImpl();
+		Sac_deepskyExample example = new Sac_deepskyExample();
+		example.createCriteria().andOtherLike('%'+term+'%');
+//		example.createCriteria().andObjectLike(term);
+//		example.or(example.createCriteria().andOtherLike(term));
 		
-		 List result =deepSkyDao. getSqlMapClientTemplate().queryForList("sac_deepsky.abatorgenerated_selectByExample", example);
+		 List<Sac_deepsky> daoResult =deepSkyDao. getSqlMapClientTemplate().queryForList("sac_deepsky.abatorgenerated_selectByExample", example, 0, 10);
+//		 List result =deepSkyDao. getSqlMapClientTemplate().queryForList("select_sqlmap.select_sac_by_name",example);
+		 List<Map<String,Object>> result=new ArrayList<Map<String,Object>>();
+		 for (Iterator<Sac_deepsky> iterator = daoResult.iterator(); iterator.hasNext();) {
+			Sac_deepsky sac_item = iterator.next();
+			Map<String,Object> lable_value=new HashMap<String,Object>();
+			lable_value.put("lable", sac_item.getOther());
+			lable_value.put("value", sac_item.getOther());
+			lable_value.put("ra_value", sac_item.getRa_hr()+"h"+sac_item.getRa_min());
+			lable_value.put("dec_value", sac_item.getDec_deg()+"."+sac_item.getDec_min());
+			lable_value.put("objvalue", sac_item);
+			result.add(lable_value);
+		}
+		 System.out.println("---------"+result.size());
+		return result;
+	}	
+	
+	@ResponseBody
+	@RequestMapping("/searchsac_object")
+	public  List<Map<String, Object>> searchsac_object(String term) throws SQLException{
+		term=term == null ? "" :term.trim();
+//		star_name=star_name.replace(' ', '%');
+//		star_name="%"+star_name+"%";
+		Sac_deepskyDAOImpl deepSkyDao=new Sac_deepskyDAOImpl();
+		Sac_deepskyExample example = new Sac_deepskyExample();
+		example.createCriteria().andObjectLike('%'+term+'%');
+		
+		 List<Sac_deepsky> daoResult =deepSkyDao. getSqlMapClientTemplate().queryForList("sac_deepsky.abatorgenerated_selectByExample", example, 0, 10);
+//		 List result =deepSkyDao. getSqlMapClientTemplate().queryForList("select_sqlmap.select_sac_by_name",example);
+		 List<Map<String,Object>> result=new ArrayList<Map<String,Object>>();
+		 for (Iterator<Sac_deepsky> iterator = daoResult.iterator(); iterator.hasNext();) {
+			Sac_deepsky sac_item = iterator.next();
+			Map<String,Object> lable_value=new HashMap<String,Object>();
+			lable_value.put("lable", sac_item.getObject());
+			lable_value.put("value", sac_item.getObject());
+			lable_value.put("ra_value", sac_item.getRa_hr()+"h"+sac_item.getRa_min());
+			lable_value.put("dec_value", sac_item.getDec_deg()+"."+sac_item.getDec_min());
+			lable_value.put("objvalue", sac_item);
+			result.add(lable_value);
+		}
+		 System.out.println("---------"+result.size());
 		return result;
 	}
 
