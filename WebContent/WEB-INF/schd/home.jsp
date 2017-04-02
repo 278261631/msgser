@@ -424,15 +424,21 @@
 		vertical-align: middle;
 	}
 	.left { float: left }
-	.right { float: right }
+	.right { float: right ;width: 400px; display: flex ;justify-content:space-around;direction: right;}
 	.clear { clear: both }
 	.tzo {
 		color: #000;
 	}
 	fieldset{
-	  border: 1px solid rgb(255,255,255);
+	  border: 1px solid rgb(230,230,230);
 	  width: 1100px;
 	  margin:auto;
+	  padding:auto;
+	}
+	.flex-display {
+		display: flex;
+		justify-content: space-around;
+		direction: left;
 	}
 
 </style>
@@ -450,9 +456,10 @@
 			</select>
 		</div>
 		<div class='right'>
-		<span>当前登录：</span><shiro:guest>Guest</shiro:guest>
-		<shiro:user><shiro:principal/> 
-			<label>星点：</label><span>1000</span><label>+</label> 
+		<shiro:guest>Guest</shiro:guest>
+		<shiro:user><span>当前登录：<shiro:principal/></span>
+			<span>星点 ： 1000</span>
+			<span>[+]</span> 
 		</shiro:user>
 		 <shiro:user><a href="<c:url value="/logout"/>">退出（Log out）</a></shiro:user>
     <shiro:guest><a href="<c:url value="/login.jsp"/>">登录（Log in）</a> (sample accounts provided)</shiro:guest> 
@@ -462,34 +469,6 @@
 	</div>
 </fieldset>
 
-<fieldset>
-<div class="ui-widget">
-  <label for="event_id">预约编号: </label>
-  <input id="event_id">
-  <label for="event_title">预约备注（Event Tile）: </label>
-  <input id="event_title">
-  <label for="event_resourceId">设备编号: </label>
-  <input id="event_resourceId">
-  <label for="event_start_format">开始时间: </label>
-  <input id="test_delay_time">
-</div>
-</fieldset>
-<fieldset>
-  <label for="star_objectname">目标名（SAC Name）: </label>
-  <input id="star_objectname">
-  <label for="star_othername">常用名（SAC Other Name）: </label>
-  <input id="star_othername">
-  <label for="star_ra_value">RA: </label>
-  <input id="star_ra_value">
-  <label for="star_dec_value">Dec: </label>
-  <input id="star_dec_value">
-
-</fieldset>
-
-<fieldset>
-  <button id="save_event_plan">保存计划（Save Plan）</button>
-  <button id="commit_event_plan">提交计划（Commit Plan）</button>
-</fieldset>
 	<div id='wrap'>
 		<div id='external-events'>
 			<h4>拖放添加</h4>
@@ -526,6 +505,40 @@
 	  	鼠标点击选择时段
 	</div>
 </div>
+
+
+
+<fieldset>
+	<div class="ui-widget flex-display">
+	  <label for="event_id">预约编号: </label>
+	  <input id="event_id">
+	  <label for="event_title">预约备注: </label>
+	  <input id="event_title" placeholder="（Event Tile）">
+	  <label for="event_resourceId">设备编号: </label>
+	  <input id="event_resourceId">
+	  <label for="event_start_format">开始时间: </label>
+	  <input id="test_delay_time">
+	</div>
+</fieldset>
+<fieldset>
+	<div class="ui-widget flex-display">
+	  <label for="star_objectname">目标编号</label>
+	  <input id="star_objectname" placeholder="SAC Name： NGC1976">
+	  <label for="star_othername">常用名: </label>
+	  <input id="star_othername" placeholder="SAC Other Name：M42">
+	  <label for="star_ra_value">RA: </label>
+	  <input id="star_ra_value">
+	  <label for="star_dec_value">Dec: </label>
+	  <input id="star_dec_value">
+	</div>
+</fieldset>
+
+<fieldset>
+<div class="ui-widget flex-display">
+  <button id="save_event_plan">保存计划（Save Plan）</button>
+  <button id="commit_event_plan">提交计划（Commit Plan）</button>
+</div>
+</fieldset>
 
 </body>
 </html>
