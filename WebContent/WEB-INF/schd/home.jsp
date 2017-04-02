@@ -248,7 +248,14 @@
 				,endtime:$("#prm_event_end").html(),userid:'1',title:$("#prm_event_title").html()},function(data){
 	        });
 	}
-
+	
+	
+	
+	function searchsac(){		
+        $.post("searchsac",{star_name :'xxxxx'},function(data){
+        	console.log(data)
+        });
+	}
 	
 </script>
 <style>
@@ -337,7 +344,7 @@
 <span id="">ID:</span> <span id="">value:</span> 
 <span id="">name:</span> <span id="">value:</span> 
 <span id="">ID:</span> <span id="">value:</span> 
-	</code><span>save</span> <span>name</span></pre>
+	</code><span>save </span><span onClick='searchsac()'>sac </span><span>send </span></pre>
 	
 	<div id='option-div'>
 		<div class='left'>

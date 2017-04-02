@@ -21,5 +21,8 @@
     <sqlMap resource="domain/xml/eqplistlog_SqlMap.xml" />
     <sqlMap resource="domain/xml/eventlist_SqlMap.xml" />
     <sqlMap resource="domain/xml/eventlistLog_SqlMap.xml" />
+    <sqlMap resource="domain/xml/sac_deepsky_SqlMap.xml" />
+    <sqlMap resource="domain/xml/select_sqlmap.xml" />
+    
     
 </sqlMapConfig>

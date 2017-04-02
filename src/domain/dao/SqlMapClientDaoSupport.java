@@ -10,7 +10,7 @@ import util.IbatisUtil;
 public class SqlMapClientDaoSupport {
 	SqlMapClient sqlMapClient = IbatisUtil.sqlMapClient;
 
-	SqlMapClient getSqlMapClientTemplate(){
+	public SqlMapClient getSqlMapClientTemplate(){
 		
 		return sqlMapClient;
 	}
