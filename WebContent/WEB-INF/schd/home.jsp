@@ -146,6 +146,7 @@
 		      });
 	    
 		$('#calendar').fullCalendar({
+			schedulerLicenseKey: 'GPL-My-Project-Is-Open-Source',
 			now: '2017-03-16',
 			editable: true,
 			aspectRatio: 1.8,
@@ -428,11 +429,17 @@
 	.tzo {
 		color: #000;
 	}
+	fieldset{
+	  border: 1px solid rgb(255,255,255);
+	  width: 1100px;
+	  margin:auto;
+	}
 
 </style>
 
 </head>
 <body>
+<fieldset>
 	<div id='top'>
 		<div class='left'>
 			时区(Timezone):
@@ -443,14 +450,19 @@
 			</select>
 		</div>
 		<div class='right'>
-			<span id='loading'>loading...</span>
+		<span>当前登录：</span><shiro:guest>Guest</shiro:guest>
+		<shiro:user><shiro:principal/> 
+			<label>星点：</label><span>1000</span><label>+</label> 
+		</shiro:user>
+		 <shiro:user><a href="<c:url value="/logout"/>">退出（Log out）</a></shiro:user>
+    <shiro:guest><a href="<c:url value="/login.jsp"/>">登录（Log in）</a> (sample accounts provided)</shiro:guest> 
+			<span id='loading'>...</span>
 		</div>
 		<div class='clear'></div>
 	</div>
-<fieldset>
-<div>
+</fieldset>
 
-</div>
+<fieldset>
 <div class="ui-widget">
   <label for="event_id">预约编号: </label>
   <input id="event_id">
@@ -458,6 +470,11 @@
   <input id="event_title">
   <label for="event_resourceId">设备编号: </label>
   <input id="event_resourceId">
+  <label for="event_start_format">开始时间: </label>
+  <input id="test_delay_time">
+</div>
+</fieldset>
+<fieldset>
   <label for="star_objectname">目标名（SAC Name）: </label>
   <input id="star_objectname">
   <label for="star_othername">常用名（SAC Other Name）: </label>
@@ -466,18 +483,16 @@
   <input id="star_ra_value">
   <label for="star_dec_value">Dec: </label>
   <input id="star_dec_value">
-  <label for="event_start_format">开始时间: </label>
-  <input id="test_delay_time">
-  <button id="save_event_plan">保存计划（Save Plan）</button>
-  <button id="commit_event_plan">提交计划（Commit Plan）</button>
-  
-</div>
 
 </fieldset>
-	<div id='wrap'>
 
+<fieldset>
+  <button id="save_event_plan">保存计划（Save Plan）</button>
+  <button id="commit_event_plan">提交计划（Commit Plan）</button>
+</fieldset>
+	<div id='wrap'>
 		<div id='external-events'>
-			<h4>Draggable Events</h4>
+			<h4>拖放添加</h4>
 			<div class='fc-event' data-start='' data-end='' data-id='' 	>整晚</div>
 			<div class='fc-event'>一个小时</div>
 			<div class='fc-event'>连续一个月</div>
@@ -494,16 +509,7 @@
 
 	</div>
 
-	<p>
-		Things render a bit differently with <code>eventOverlap:false</code>
-	</p>
-
 	<div id='calendar'></div>
-
-<p>Hi <shiro:guest>Guest</shiro:guest><shiro:user><shiro:principal/></shiro:user>!
-    ( <shiro:user><a href="<c:url value="/logout"/>">Log out</a></shiro:user>
-    <shiro:guest><a href="<c:url value="/login.jsp"/>">Log in</a> (sample accounts provided)</shiro:guest> )
-</p>
  
 
 <div style="display:none">
